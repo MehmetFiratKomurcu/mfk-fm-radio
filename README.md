@@ -1,4 +1,4 @@
-#MFK FM RADIO
+# MFK FM RADIO
 [![Netlify Status](https://api.netlify.com/api/v1/badges/be4a9731-e0ca-4d42-973e-5facc096bd10/deploy-status)](https://app.netlify.com/sites/mfk-fm-radio/deploys)
 
 MFK FM Radio is a [Buildspace](https://buildspace.so/) "Intro to Blockchain and Web3" project. You can send youtube or spotify links and people can see them, this is normal so far but! The data resides in smart contract on Ethereum Rinkeby Test Network. So you can connect your wallet and spend some fake ETH!  
@@ -29,7 +29,3 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-on't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
