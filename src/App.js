@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {ethers} from "ethers";
 import abi from "./utils/WavePortal.json";
 import './App.css';
+import YoutubeVideo from "./YoutubeVideo";
 
 function App() {
     const [currentAccount, setCurrentAccount] = useState("");
@@ -150,18 +151,19 @@ function App() {
 
             <div className="dataContainer">
                 <div className="header">
-                    👋 Hey there, Welcome to the HiddenMusicWorld!
+                    👋 Hey there, Welcome to the MFK FM Radio!
                 </div>
 
                 <div className="bio">
-                    I am Mehmet Firat and I'm a software engineer. If you want to send me some great songs from youtube,
-                    why are you waiting? Paste the url!
+                    I am Mehmet Fırat and I'm a software engineer. If you want to send me some great songs from youtube
+                    or spotify, why are you waiting then? Paste the url!
                 </div>
 
                 <form onSubmit={wave}>
 
                     <div className="message-container">
-                        <textarea className="message-textarea" required value={message} onChange={(e => setMessage(e.target.value))}
+                        <textarea className="message-textarea" required value={message}
+                                  onChange={(e => setMessage(e.target.value))}
                                   placeholder="Write your song urls here!"/>
                     </div>
 
@@ -183,7 +185,7 @@ function App() {
 
                 {allWaves.map((wave, index) => {
                     return (
-                        <div key={index} style={{backgroundColor: "OldLace", marginTop: "16px", padding: "8px"}}>
+                        <div key={index} style={{backgroundColor: "#f8f8f8", marginTop: "16px", padding: "8px"}}>
                             <div>Address: {wave.address}</div>
                             <div>Time: {wave.timestamp.toString()}</div>
                             <div>Message: {wave.message}</div>
