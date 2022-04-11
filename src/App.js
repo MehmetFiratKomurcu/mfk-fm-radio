@@ -50,6 +50,7 @@ function App() {
 
             console.log("Connected", accounts[0]);
             setCurrentAccount(accounts[0]);
+            await getAllWaves();
         } catch (error) {
             console.log(error);
         }
@@ -156,7 +157,7 @@ function App() {
 
                 <div className="bio">
                     I am Mehmet Fırat and I'm a software engineer. If you want to send me some great songs from youtube
-                    or spotify, why are you waiting then? Paste the url!
+                    or spotify, why are you waiting then? Paste the url! You can see other songs if you connect your wallet.
                 </div>
 
                 <form onSubmit={wave}>
