@@ -49,6 +49,7 @@ function App() {
             const accounts = await ethereum.request({method: "eth_requestAccounts"});
 
             console.log("Connected", accounts[0]);
+            toast.success("Wallet Connected!");
             setCurrentAccount(accounts[0]);
             await getAllVideos();
         } catch (error) {
