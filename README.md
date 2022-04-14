@@ -1,7 +1,7 @@
 # MFK FM RADIO
 [![Netlify Status](https://api.netlify.com/api/v1/badges/be4a9731-e0ca-4d42-973e-5facc096bd10/deploy-status)](https://app.netlify.com/sites/mfk-fm-radio/deploys)
 
-MFK FM Radio is a [Buildspace](https://buildspace.so/) "Intro to Blockchain and Web3" project. You can send youtube or spotify links and people can see them, this is normal so far but! The data resides in smart contract on Ethereum Rinkeby Test Network. So you can connect your wallet and spend some fake ETH!  
+MFK FM Radio is a [Buildspace](https://buildspace.so/) "Intro to Blockchain and Web3" project. You can send youtube links and people can see them, this is normal so far but! The data resides in smart contract on Ethereum Rinkeby Test Network. So you can connect your wallet and spend some fake ETH!  
 
 You can view this site at: https://mfk-fm-radio.netlify.app/
 
