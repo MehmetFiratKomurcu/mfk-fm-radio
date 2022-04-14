@@ -1,51 +1,66 @@
 .mainContainer {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 64px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 64px;
 }
 
 .dataContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 600px;
 }
 
 .header {
-  text-align: center;
-  font-size: 32px;
-  font-weight: 600;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 600;
 }
 
 .bio {
-  text-align: center;
-  color: gray;
-  margin-top: 16px;
+    text-align: center;
+    color: gray;
+    margin-top: 16px;
 }
 
-.waveButton {
-  cursor: pointer;
-  margin-top: 16px;
-  padding: 8px;
-  border: 0;
-  border-radius: 5px;
-  width: 100%;
-  box-shadow: 0 1px 1px 0 rgb(0 0 0 / 20%), 0 1px 9px 0 rgb(0 0 0 / 19%);
+.send-video-button {
+    cursor: pointer;
+    margin-top: 16px;
+    padding: 8px;
+    border: 0;
+    border-radius: 5px;
+    width: 100%;
+    box-shadow: 0 1px 1px 0 rgb(0 0 0 / 20%), 0 1px 9px 0 rgb(0 0 0 / 19%);
 }
 
 .message-textarea {
-  width: 100%;
-  box-sizing: border-box;
-  margin-top: 5%;
-  resize: none;
-  background-color: #f8f8f8;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  padding: 12px 20px;
-  outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 5%;
+    resize: none;
+    background-color: #f8f8f8;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    padding: 12px 20px;
+    outline: none;
 }
 
 .totalWaves {
-  padding-top: 2%;
+    padding-top: 2%;
+}
+
+.all-videos-container {
+    background-color: #f8f8f8;
+    margin-top: 16px;
+    padding: 8px;
+}
+
+.all-videos-container div {
+    padding: 1%;
+}
+
+/*Youtube Video*/
+.youtube-video {
+    width: 100%;
 }

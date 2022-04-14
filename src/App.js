@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {ethers} from "ethers";
-import abi from "./utils/WavePortal.json";
+import abi from "./utils/MFKFM.json";
 import './App.css';
 import YoutubeVideo from "./YoutubeVideo";
+import {toast, Toaster} from "react-hot-toast";
 
 function App() {
     const [currentAccount, setCurrentAccount] = useState("");
-    const [totalWaves, setTotalWaves] = useState(null);
-    const [allWaves, setAllWaves] = useState([]);
+    const [allVideos, setAllVideos] = useState([]);
     const [message, setMessage] = useState("");
-    const contractAddress = "0xc29Af59Cd6A0fa5e0d5808E384C9a139d3c01e71";
+    const contractAddress = "0xc0705c41ce746427aD7C42d8Ddf21Ced1917EA5E";
     const contractABI = abi.abi;
 
     const checkIfWalletIsConnected = async () => {
@@ -28,7 +28,7 @@ function App() {
                 const account = accounts[0];
                 console.log("Found an authorized account:", account);
                 setCurrentAccount(account);
-                await getAllWaves();
+                await getAllVideos();
             } else {
                 console.log("No authorized account found.");
             }
@@ -50,22 +50,25 @@ function App() {
 
             console.log("Connected", accounts[0]);
             setCurrentAccount(accounts[0]);
-            await getAllWaves();
+            await getAllVideos();
         } catch (error) {
             console.log(error);
         }
     }
 
-    const isVideoUrlValid = url => {
-        return url.replace("http://", "").replace("https://", "").replace("www.", "").replace("youtu.be/", "youtube.com?v=").slice(0, 14) === "youtube.com?v=";
+    const matchYoutubeUrl = url => {
+        const p = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+        if (url.match(p)) {
+            return url.match(p)[1];
+        }
+        return false;
     }
 
-
-    const wave = async (e) => {
+    const sendVideo = async (e) => {
         e.preventDefault();
 
-        if (!isVideoUrlValid(message)) {
-            window.alert("You have to send valid youtube url");
+        if (!matchYoutubeUrl(message)) {
+            toast.error("You need to send valid Youtube url!");
             return;
         }
 
@@ -75,49 +78,44 @@ function App() {
             if (ethereum) {
                 const provider = new ethers.providers.Web3Provider(ethereum);
                 const signer = provider.getSigner();
-                const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+                const mfkFMContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-                let count = await wavePortalContract.getTotalWaves();
-                console.log("Retrieved total wave count...", count.toNumber());
+                const sendVideoTxn = await mfkFMContract.AddVideo(message, {gasLimit: 300000});
+                console.log("Mining...", sendVideoTxn.hash);
+                toast("🦄 Mining...!");
 
-                const waveTxn = await wavePortalContract.wave(message, {gasLimit: 300000});
-                console.log("Mining...", waveTxn.hash);
-
-                await waveTxn.wait();
-                console.log("Mined --", waveTxn.hash);
-
-                count = await wavePortalContract.getTotalWaves();
-                console.log("Retrieved total wave count...", count.toNumber());
-
-                setTotalWaves(count.toNumber());
+                await sendVideoTxn.wait();
+                console.log("Mined --", sendVideoTxn.hash);
+                toast.success("🦄 Mined --!");
 
             } else {
                 console.log("Ethereum object doesn't exist!");
             }
         } catch (error) {
             console.log(error);
+            toast.error("Transaction failed")
         }
     }
 
-    const getAllWaves = async () => {
+    const getAllVideos = async () => {
         try {
             const {ethereum} = window;
 
             if (ethereum) {
                 const provider = new ethers.providers.Web3Provider(ethereum);
                 const signer = provider.getSigner();
-                const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
-                const waves = await wavePortalContract.getAllWaves();
+                const mfkFMContract = new ethers.Contract(contractAddress, contractABI, signer);
+                const videos = await mfkFMContract.getAllVideos();
 
-                const wavesCleaned = waves.map(wave => {
+                const videosCleaned = videos.map(video => {
                     return {
-                        address: wave.waver,
-                        timestamp: new Date(wave.timestamp * 1000),
-                        message: wave.message,
+                        address: video.videoSender,
+                        timestamp: new Date(video.timestamp * 1000),
+                        message: video.message,
                     };
                 });
 
-                setAllWaves(wavesCleaned);
+                setAllVideos(videosCleaned);
             } else {
                 console.log("Ethereum object doesn't exist");
             }
@@ -129,11 +127,11 @@ function App() {
     useEffect(() => {
         checkIfWalletIsConnected();
 
-        let wavePortalContract;
+        let mfkMFContract;
 
-        const onNewWave = (from, timestamp, message) => {
-            console.log("NewWave", from, timestamp, message);
-            setAllWaves(prevState => [
+        const onNewVideo = (from, timestamp, message) => {
+            console.log("NewVideo", from, timestamp, message);
+            setAllVideos(prevState => [
                 ...prevState,
                 {
                     address: from,
@@ -147,16 +145,21 @@ function App() {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
 
-            wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
-            wavePortalContract.on("NewWave", onNewWave);
+            mfkMFContract = new ethers.Contract(contractAddress, contractABI, signer);
+            mfkMFContract.on("NewVideo", onNewVideo);
         }
 
         return () => {
-            if (wavePortalContract) {
-                wavePortalContract.off("NewWave", onNewWave);
+            if (mfkMFContract) {
+                mfkMFContract.off("NewVideo", onNewVideo);
             }
         };
     }, []);
+
+    const getYoutubeIdFromURL = url => {
+        url = url.split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+        return (url[2] !== undefined) ? url[2].split(/[^0-9a-z_\-]/i)[0] : url[0];
+    }
 
     return (
         <div className="mainContainer">
@@ -167,12 +170,12 @@ function App() {
                 </div>
 
                 <div className="bio">
-                    I am Mehmet Fırat and I'm a software engineer. If you want to send me some great songs from youtube
-                    or spotify, why are you waiting then? Paste the url! You can see other songs if you connect your
-                    wallet.
+                    I am Mehmet Fırat and I'm a software engineer. If you want to send me some great songs from youtube,
+                    why are you waiting then? Paste the url! You can send me song and see other songs if you connect
+                    your wallet to Rinkeby Test Network.
                 </div>
 
-                <form onSubmit={wave}>
+                <form onSubmit={sendVideo}>
 
                     <div className="message-container">
                         <textarea className="message-textarea" required value={message}
@@ -180,31 +183,28 @@ function App() {
                                   placeholder="Write your song urls here!"/>
                     </div>
 
-                    <button className="waveButton">
-                        Submit
+                    <button className="send-video-button">
+                        Send Video 🔥
                     </button>
 
                 </form>
 
                 {!currentAccount && (
-                    <button className="waveButton" onClick={connectWallet}>
+                    <button className="send-video-button" onClick={connectWallet}>
                         Connect Wallet
                     </button>
                 )}
 
-                {totalWaves && (
-                    <div className="totalWaves">Total Waves: {totalWaves}</div>
-                )}
-
-                {allWaves.map((wave, index) => {
+                {allVideos.map((video, index) => {
                     return (
-                        <div key={index} style={{backgroundColor: "#f8f8f8", marginTop: "16px", padding: "8px"}}>
-                            <div>Address: {wave.address}</div>
-                            <div>Time: {wave.timestamp.toString()}</div>
-                            <div>Message: {wave.message}</div>
+                        <div key={index} className="all-videos-container">
+                            <div>Address: {video.address}</div>
+                            <div>Time: {new Date(video.timestamp).toLocaleString()}</div>
+                            <YoutubeVideo videoId={getYoutubeIdFromURL(video.message)}/>
                         </div>)
                 })}
 
+                <Toaster/>
             </div>
         </div>
     );
