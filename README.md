@@ -1,7 +1,8 @@
 # MFK FM RADIO
 
-<img alt="radio" align="center" src="./images/radio.webp" />
-
+<center>
+<img alt="radio" src="./images/radio.webp" />
+</center>
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/be4a9731-e0ca-4d42-973e-5facc096bd10/deploy-status)](https://app.netlify.com/sites/mfk-fm-radio/deploys)
 
