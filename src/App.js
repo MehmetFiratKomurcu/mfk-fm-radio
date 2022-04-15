@@ -27,8 +27,8 @@ function App() {
             if (accounts.length !== 0) {
                 const account = accounts[0];
                 console.log("Found an authorized account:", account);
-                setCurrentAccount(account);
                 await getAllVideos();
+                setCurrentAccount(account);
             } else {
                 console.log("No authorized account found.");
             }
@@ -49,7 +49,6 @@ function App() {
             const accounts = await ethereum.request({method: "eth_requestAccounts"});
 
             console.log("Connected", accounts[0]);
-            toast.success("Wallet Connected!");
             setCurrentAccount(accounts[0]);
             await getAllVideos();
         } catch (error) {
@@ -68,8 +67,20 @@ function App() {
     const sendVideo = async (e) => {
         e.preventDefault();
 
+        if (!currentAccount) {
+            toast.error("Please connect to Ethereum Rinkeby Test Network to send video!");
+            return;
+        }
+
         if (!matchYoutubeUrl(message)) {
             toast.error("You need to send valid Youtube url!");
+            return;
+        }
+
+        const isNetworkCorrect = await checkIsNetworkCorrect();
+
+        if (!isNetworkCorrect) {
+            toast.error("Please disconnect and connect to Ethereum Rinkeby Test Network");
             return;
         }
 
@@ -98,6 +109,34 @@ function App() {
         }
     }
 
+    const getContract = () => {
+        try {
+            const {ethereum} = window;
+
+            if (ethereum) {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+                return new ethers.Contract(contractAddress, contractABI, signer);
+            } else {
+                console.log("Ethereum object doesn't exist");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const checkIsNetworkCorrect = async () => {
+        try {
+            const mfkFMContract = getContract();
+            const network = await mfkFMContract.provider.getNetwork();
+
+            return network.name === "rinkeby";
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
     const getAllVideos = async () => {
         try {
             const {ethereum} = window;
@@ -106,6 +145,13 @@ function App() {
                 const provider = new ethers.providers.Web3Provider(ethereum);
                 const signer = provider.getSigner();
                 const mfkFMContract = new ethers.Contract(contractAddress, contractABI, signer);
+                const isNetworkCorrect = await checkIsNetworkCorrect();
+
+                if (!isNetworkCorrect) {
+                    toast.error("Please disconnect and connect to Ethereum Rinkeby Test Network");
+                    return;
+                }
+
                 const videos = await mfkFMContract.getAllVideos();
 
                 const videosCleaned = videos.map(video => {
