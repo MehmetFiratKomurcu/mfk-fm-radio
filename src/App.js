@@ -9,7 +9,7 @@ function App() {
     const [currentAccount, setCurrentAccount] = useState("");
     const [allVideos, setAllVideos] = useState([]);
     const [message, setMessage] = useState("");
-    const contractAddress = "0xc0705c41ce746427aD7C42d8Ddf21Ced1917EA5E";
+    const contractAddress = "0xc33202D7400226f76Ca02513FaE033f44B7b2D07";
     const contractABI = abi.abi;
 
     const checkIfWalletIsConnected = async () => {

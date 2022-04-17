@@ -42,7 +42,7 @@ contract MFKFM {
 
         console.log("Random # generated: %d", seed);
 
-        if (seed < 50) {
+        if (seed < 1) {
             uint256 prizeAmount = 0.0001 ether;
             require(
                 prizeAmount <= address(this).balance,
